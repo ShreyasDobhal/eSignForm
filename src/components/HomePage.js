@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 // import ReactDOM from 'react-dom';
+import firebase from '../firebase';
+import {v4 as uuidv4} from 'uuid';
 import SignatureCanvas from 'react-signature-canvas';
 import CanvasOptions from './CanvasOptions';
 import Input from './Input';
-import _ from 'lodash';
+import _, { trim } from 'lodash';
 
 class HomePage extends Component {
     constructor(props) {
@@ -20,7 +22,8 @@ class HomePage extends Component {
                 'mobile': null,
                 'sign': null
             },
-            signCanvasFocused: false
+            signCanvasFocused: false,
+            data: null
         };
 
         this.inputRef = {
@@ -33,6 +36,8 @@ class HomePage extends Component {
             'mobile': React.createRef()
         }
         this.signCanvasInstance = React.createRef();
+
+        this.firebaseRef = firebase.firestore().collection('names');
     }
 
     handleSignClear = () => {
@@ -81,11 +86,64 @@ class HomePage extends Component {
 
         if (isValid) {
             // Submit the form
-            alert('Form submitted successfully');
+            const trimmedCanvas = this.signCanvasInstance.current.getTrimmedCanvas();
+            const sign = trimmedCanvas.toDataURL('image/png');
+
+            const id = uuidv4();
+            const data = _.reduce(this.inputRef, (result, ref, field) => {
+                result[field] = ref.current.value;
+                return result;
+            }, {});
+            data['sign'] = sign;
+
+            // Save data to DB
+            this.firebaseRef.doc(id).set(data).then(()=> {
+                alert('Data saved');
+            }).catch((err) => {
+                console.log(err);
+            });
         } else {
             // Do nothing
             alert('Fill all details');
         }
+    }
+
+    handleClick = () => {
+        // Subscription based query
+        // this.firebaseRef.onSnapshot((querySnapshot) => {
+        //     const items = [];
+        //     querySnapshot.forEach((doc) => {
+        //         items.push(doc.data());
+        //     });
+        //     this.setState({data: items});
+        //     console.log(items);
+        // });
+
+        // Get request based query
+        this.firebaseRef.get().then((item) => {
+            const items = item.docs.map((doc) => doc.data());
+            this.setState({data: items});
+            console.log(items);
+        })
+    }
+
+    handleSave = () => {
+        const name = {
+            name: 'Shreyas',
+            email: 'dont@know.com'
+        }
+        this.firebaseRef.doc(uuidv4()).set(name).catch((err) => {
+            console.log(err);
+        })
+    }
+
+    render1() {
+        return (
+            <div>
+                <button onClick={this.handleSave}>Click</button>
+                <p>{this.state.data?.[0]?.name}</p>
+            </div>
+        );
     }
 
     render() {
