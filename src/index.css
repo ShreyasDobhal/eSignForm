@@ -102,7 +102,7 @@ code {
 }
 
 .letter-body {
-    margin: 40px 25px 40px 25px;
+    margin: 64px 25px 40px 25px;
     text-align: left;
 }
 
@@ -178,6 +178,21 @@ code {
     height: 125px;
 }
 
+.signCanvasPlaceholder {
+    border: 1px solid gray;
+    background-image: url('sign-placeholder.PNG');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: auto;
+    border-radius: 10px;
+    width: 100%;
+    height: 125px;
+}
+
+.signCanvas:active {
+    /* border: 1px solid red; */
+}
+
 .canvas-icon-container {
     display: flex;
     justify-content: flex-end;
@@ -193,4 +208,22 @@ code {
 
 .canvas-icon:hover {
     color: #65a2d6;
+}
+
+.letter-submit {
+    margin: 25px 0px;
+}
+
+.submit-btn {
+    padding: 15px 40px;
+    background-color: #2567a0;
+    border: 1px solid #184e7c;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #498cc5;
+    box-shadow: #498cc5 0px 0px 15px 0px;
 }

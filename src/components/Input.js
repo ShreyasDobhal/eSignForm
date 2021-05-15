@@ -32,7 +32,7 @@ class Input extends Component {
                 <h3>{this.props.label}: <sup> *</sup></h3>
                 <input type='text' ref={this.props.forwardedRef} />
                 {
-                    !_.isNull(this.props.error) ? (
+                    !_.isNull(this.props.error) && !this.state.isFocused? (
                         <p className='error-message'>{this.props.error}</p>
                     ) : null
                 }

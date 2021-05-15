@@ -16,8 +16,10 @@ class HomePage extends Component {
                 'upi': null,
                 'eid': null,
                 'hq': null,
+                'designation': null,
                 'mobile': null,
-            }
+            },
+            signCanvasFocused: false
         };
 
         this.inputRef = {
@@ -26,6 +28,7 @@ class HomePage extends Component {
             'upi': React.createRef(),
             'eid': React.createRef(),
             'hq': React.createRef(),
+            'designation': React.createRef(),
             'mobile': React.createRef()
         }
         this.signCanvasInstance = React.createRef();
@@ -33,6 +36,7 @@ class HomePage extends Component {
 
     handleSignClear = () => {
         this.signCanvasInstance.current.clear();
+        this.setState({signCanvasFocused: false});
     }
 
     handleSignSubmit = () => {
@@ -65,6 +69,10 @@ class HomePage extends Component {
         console.log(field, element);
     }
 
+    onSubmit = () => {
+
+    }
+
     render() {
         return (
             <div className='App'>
@@ -83,14 +91,14 @@ class HomePage extends Component {
                     </div>
                     <div className='letter-form'>
                         <Input 
-                            ref={this.inputRef['email']}
-                            label='Email'
-                            error={this.state.error['email']}
-                            onBlur={this.validateInput} />
-                        <Input 
                             ref={this.inputRef['name']} 
                             label='Name'
                             error={this.state.error['name']}
+                            onBlur={this.validateInput} />
+                        <Input 
+                            ref={this.inputRef['email']}
+                            label='Email'
+                            error={this.state.error['email']}
                             onBlur={this.validateInput} />
                         <Input 
                             ref={this.inputRef['upi']} 
@@ -108,6 +116,11 @@ class HomePage extends Component {
                             error={this.state.error['hq']}
                             onBlur={this.validateInput} />
                         <Input 
+                            ref={this.inputRef['designation']} 
+                            label='Designation' 
+                            error={this.state.error['designation']}
+                            onBlur={this.validateInput} />
+                        <Input 
                             ref={this.inputRef['mobile']} 
                             label='Mobile Number' 
                             error={this.state.error['mobile']}
@@ -119,16 +132,17 @@ class HomePage extends Component {
                             penColor='#2c3345'
                             ref={this.signCanvasInstance}
                             canvasProps={{
-                                // width: 500,
-                                // height: 500,
-                                className: 'signCanvas'
+                                className: this.state.signCanvasFocused ? 'signCanvas' : 'signCanvasPlaceholder'
                             }}
-                            // onEnd={this.handleSignEnd} 
+                            onBegin={() => this.setState({signCanvasFocused: true})}
                         />
                         <CanvasOptions
                             onClear={this.handleSignClear}
                             onSubmit={this.handleSignSubmit}
                         />   
+                    </div>
+                    <div className='letter-submit'>
+                        <button className='submit-btn' onClick={this.onSubmit}>Submit</button>
                     </div>
                 </div>
             </div>
