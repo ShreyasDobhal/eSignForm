@@ -71,17 +71,98 @@ code {
 
 .letter-container {
     border: 1px solid #e9f6ff;
-    background-color: whitesmoke;
+    background-color: #ffffff;
     color: #2c3345;
     margin: 10px;
     width: 100%;
     max-width: 700px;
-    height: 600px;
+    min-height: 600px;
+}
+
+.letter-header {
+    /* border: 2px solid red; */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 5px;
+}
+
+.letter-header h1 {
+    margin: 10px 0px 2px 0px;
+}
+
+.letter-header p {
+    margin: 2px 0px 2px 2px;
+    font-size: 0.65em;
 }
 
 .letter-icon {
     width: 32px;
     margin: -2px 10px;
+}
+
+.letter-body {
+    margin: 40px 25px 40px 25px;
+    text-align: left;
+}
+
+.letter-form {
+    text-align: left;
+    padding: 5px 0px;
+}
+
+.letter-input {
+    width: 98%;
+    box-sizing: border-box;
+    padding: 4%;
+    padding-top: 2px;
+    margin: auto;
+}
+
+.letter-input p {
+    /* border: 2px solid blue; */
+}
+
+.letter-input input {
+    max-width: 400px;
+    width: 100%;
+    height: 32px;
+    border-radius: 5px;
+    border: 1px solid grey;
+    outline: none;
+    padding: 0px 10px;
+    box-sizing: border-box;
+}
+
+.letter-input sup {
+    color: #f43a8c;
+}
+
+.input-focused {
+    border: 1px solid #cfd9f1;
+    border-radius: 5px;
+    background-color: #f1f5ff;
+}
+
+.input-focused input {
+    border-color: #2e69ff;
+    box-shadow: #c9d8fe 0px 0px 15px;
+}
+
+.input-error {
+    border: 1px solid #ffeded;
+    border-radius: 5px;
+    background-color: #ffeded;
+}
+
+.input-error input {
+    border-color: #f23a3c;
+    box-shadow: #f23a3c 0px 0px 15px;
+}
+
+.error-message {
+    color: #f23a3c;
+    font-size: 0.7em;
 }
 
 .sign-container {
