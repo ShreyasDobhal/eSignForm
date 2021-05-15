@@ -166,13 +166,29 @@ code {
 }
 
 .sign-container {
-    width: 90%;
+    width: 98%;
+    box-sizing: border-box;
+    padding: 4%;
+    padding-top: 2px;
     margin: auto;
     text-align: left;
 }
 
+.sign-error {
+    border: 1px solid #ffeded;
+    border-radius: 5px;
+    background-color: #ffeded;
+}
+
+.sign-focused:active {
+    border: 1px solid #cfd9f1;
+    border-radius: 5px;
+    background-color: #f1f5ff;
+}
+
 .signCanvas {
     border: 1px solid gray;
+    background-color: white;
     border-radius: 10px;
     width: 100%;
     height: 125px;
@@ -180,6 +196,7 @@ code {
 
 .signCanvasPlaceholder {
     border: 1px solid gray;
+    background-color: white;
     background-image: url('sign-placeholder.PNG');
     background-repeat: no-repeat;
     background-position: center center;
@@ -189,17 +206,25 @@ code {
     height: 125px;
 }
 
-.signCanvas:active {
-    /* border: 1px solid red; */
+.sign-error .signCanvas,
+.sign-error .signCanvasPlaceholder {
+    border-color: #f23a3c;
+    box-shadow: #f23a3c 0px 0px 15px;
+}
+
+.sign-focused .signCanvas:active,
+.sign-focused .signCanvasPlaceholder:active {
+    border-color: #2e69ff;
+    box-shadow: #c9d8fe 0px 0px 15px;
 }
 
 .canvas-icon-container {
     display: flex;
     justify-content: flex-end;
+    padding-right: 20px;
 }
 
 .canvas-icon {
-    /* font-size: 40px; */
     font-size: 2em;
     margin: 0.5em;
     color: #2567a0;

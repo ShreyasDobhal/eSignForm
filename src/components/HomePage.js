@@ -18,6 +18,7 @@ class HomePage extends Component {
                 'hq': null,
                 'designation': null,
                 'mobile': null,
+                'sign': null
             },
             signCanvasFocused: false
         };
@@ -39,38 +40,52 @@ class HomePage extends Component {
         this.setState({signCanvasFocused: false});
     }
 
-    handleSignSubmit = () => {
-        if (this.signCanvasInstance.current.isEmpty()) {
-            alert('Please enter your signature');
-        } else {
-            alert('Your sign has been submitted');
+    validateEnteredData = (data, field) => {
+        if (_.isEmpty(data)) {
+            return 'This field cannot be empty';
         }
-        this.signCanvasInstance.current.clear();
+        return null;
     }
 
     validateInput = (element) => {
         const field = _.find(_.keys(this.inputRef), (field) => this.inputRef[field] === element);
         const inputElement = element.current;
-        if (_.isEmpty(inputElement.value)) {
-            this.setState({
-                error: {
-                    ...this.state.error,
-                    [field]: 'This field cannot be empty'
-                }
-            });
-        } else if (!_.isNull(this.state.error[field])) {
-            this.setState({
-                error: {
-                    ...this.state.error,
-                    [field]: null
-                }
-            });
-        }
-        console.log(field, element);
+        this.setState({
+            error: {
+                ...this.state.error,
+                [field]: this.validateEnteredData(inputElement.value, field)
+            }
+        });
     }
 
     onSubmit = () => {
+        // Check all input elements
+        const error = _.cloneDeep(this.state.error);
+        _.forEach(this.inputRef, (ref, field) => {
+            const inputElement = ref.current;
+            error[field] = this.validateEnteredData(inputElement.value, field);
+        });
 
+        if (this.signCanvasInstance.current.isEmpty()) {
+            error['sign'] = this.validateEnteredData('', 'sign');
+        } else {
+            error['sign'] = null;
+        }
+
+        this.setState({error});
+
+        const isValid = _.reduce(error, (result, value) => {
+            result = result && _.isNull(value);
+            return result;
+        }, true);
+
+        if (isValid) {
+            // Submit the form
+            alert('Form submitted successfully');
+        } else {
+            // Do nothing
+            alert('Fill all details');
+        }
     }
 
     render() {
@@ -126,7 +141,10 @@ class HomePage extends Component {
                             error={this.state.error['mobile']}
                             onBlur={this.validateInput} />
                     </div>
-                    <div className='sign-container'>
+                    <div className={`sign-container${
+                            this.state.signCanvasFocused
+                                ? ' sign-focused'
+                                : this.state.error['sign'] ? ' sign-error' : ''}`} >
                         <h3>Signature:</h3>
                         <SignatureCanvas 
                             penColor='#2c3345'
@@ -134,13 +152,11 @@ class HomePage extends Component {
                             canvasProps={{
                                 className: this.state.signCanvasFocused ? 'signCanvas' : 'signCanvasPlaceholder'
                             }}
+                            clearOnResize={false}
                             onBegin={() => this.setState({signCanvasFocused: true})}
                         />
-                        <CanvasOptions
-                            onClear={this.handleSignClear}
-                            onSubmit={this.handleSignSubmit}
-                        />   
                     </div>
+                    <CanvasOptions onClear={this.handleSignClear} />   
                     <div className='letter-submit'>
                         <button className='submit-btn' onClick={this.onSubmit}>Submit</button>
                     </div>
