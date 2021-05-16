@@ -106,6 +106,15 @@ code {
     text-align: left;
 }
 
+.letter-stats {
+    text-align: left;
+    padding-left: 4%;
+}
+
+.label-small {
+    font-size: 0.75em;
+}
+
 .letter-form {
     text-align: left;
     padding: 5px 0px;

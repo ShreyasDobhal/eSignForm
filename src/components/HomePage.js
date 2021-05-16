@@ -5,7 +5,7 @@ import {v4 as uuidv4} from 'uuid';
 import SignatureCanvas from 'react-signature-canvas';
 import CanvasOptions from './CanvasOptions';
 import Input from './Input';
-import _, { trim } from 'lodash';
+import _ from 'lodash';
 
 class HomePage extends Component {
     constructor(props) {
@@ -23,6 +23,7 @@ class HomePage extends Component {
                 'sign': null
             },
             signCanvasFocused: false,
+            letterStats: null,
             data: null
         };
 
@@ -108,6 +109,24 @@ class HomePage extends Component {
         }
     }
 
+    componentDidMount() {
+        this.firebaseRef.onSnapshot((querySnapshot) => {
+            const names = [];
+            querySnapshot.forEach((doc) => {
+                names.push(doc.data());
+            });
+            let message;
+            if (_.isEmpty(names)) {
+                message = `Be the first to sign this document`;
+            } else if (names.length === 1) {
+                message = `${names[0].name} has already signed this document`;
+            } else {
+                message = `${_.sample(names).name} and ${names.length - 1} others have already signed this document`;
+            }
+            this.setState({letterStats: message});
+        });
+    }
+
     handleClick = () => {
         // Subscription based query
         // this.firebaseRef.onSnapshot((querySnapshot) => {
@@ -161,6 +180,10 @@ class HomePage extends Component {
                             of Abbott all India Employee's union and to give his honorary
                             service even after his retirement.
                         </p>
+                    </div>
+                    <div className='letter-stats'>
+                        <span><i class="fas fa-pencil-alt"></i></span>
+                        <span className='label-small'> {this.state.letterStats}</span>
                     </div>
                     <div className='letter-form'>
                         <Input 
