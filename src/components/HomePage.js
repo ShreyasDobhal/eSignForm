@@ -6,6 +6,8 @@ import SignatureCanvas from 'react-signature-canvas';
 import CanvasOptions from './CanvasOptions';
 import Input from './Input';
 import _ from 'lodash';
+import $ from 'jquery';
+import jsPDF from 'jspdf';
 
 class HomePage extends Component {
     constructor(props) {
@@ -24,7 +26,9 @@ class HomePage extends Component {
             },
             signCanvasFocused: false,
             letterStats: null,
-            data: null
+            showPDFPreview: false,
+            downloadStart: false,
+            data: null,
         };
 
         this.inputRef = {
@@ -72,12 +76,14 @@ class HomePage extends Component {
             error[field] = this.validateEnteredData(inputElement.value, field);
         });
 
+        // Check sign
         if (this.signCanvasInstance.current.isEmpty()) {
             error['sign'] = this.validateEnteredData('', 'sign');
         } else {
             error['sign'] = null;
         }
 
+        // Update error field
         this.setState({error});
 
         const isValid = _.reduce(error, (result, value) => {
@@ -97,9 +103,11 @@ class HomePage extends Component {
             }, {});
             data['sign'] = sign;
 
+            this.setState({data});
+
             // Save data to DB
             this.firebaseRef.doc(id).set(data).then(()=> {
-                alert('Data saved');
+                this.setState({showPDFPreview: true});
             }).catch((err) => {
                 console.log(err);
             });
@@ -127,45 +135,126 @@ class HomePage extends Component {
         });
     }
 
-    handleClick = () => {
-        // Subscription based query
-        // this.firebaseRef.onSnapshot((querySnapshot) => {
-        //     const items = [];
-        //     querySnapshot.forEach((doc) => {
-        //         items.push(doc.data());
-        //     });
-        //     this.setState({data: items});
-        //     console.log(items);
+    onSave = () => {
+        this.setState({downloadStart: true}, () => {
+            setTimeout(() => {
+                window.print();
+                this.setState({downloadStart: false});
+            }, 1000);
+        });
+        // window.html2canvas = html2canvas;
+        // const doc = document.getElementById('pdf-preview');
+        // const pdf = new jsPDF();;
+        // pdf.fromHTML(doc);
+        // pdf.save();
+
+        // const doc = new jsPDF();
+        
+        // doc.text("Hello World", 10, 10);
+        // doc.save("a4.pdf");
+        
+        // const doc = new jsPDF("p", "mm", "a4");
+        // const doc = new jsPDF();
+        // doc.fromHTML(document.getElementById('pdf-preview').innerHTML, 15, 15, {
+        //     width: 170,
+        //     callback: () => {
+        //         doc.save();
+            
+        // });
+        // doc.output("dataurlnewwindow");
+        // doc.save();
+        // doc.setFontSize(8);
+
+        // doc.addHTML($('#pdf-preview')[0], () => {
+        //     doc.save('test.pdf');
+        // })
+        // doc.html(document.getElementById('pdf-preview').innerHTML, {
+        //     callback: (doc) => {
+        //         doc.save('test.pdf');
+        //     },
+        //     x: 10,
+        //     y: 10
         // });
 
-        // Get request based query
-        this.firebaseRef.get().then((item) => {
-            const items = item.docs.map((doc) => doc.data());
-            this.setState({data: items});
-            console.log(items);
-        })
-    }
+        // let mywindow = window.open('', 'PRINT', 'height=650,width=900,top=100,left=150');
 
-    handleSave = () => {
-        const name = {
-            name: 'Shreyas',
-            email: 'dont@know.com'
-        }
-        this.firebaseRef.doc(uuidv4()).set(name).catch((err) => {
-            console.log(err);
-        })
-    }
+        // mywindow.document.write(`<html><head><title>Abbott</title>`);
+        // mywindow.document.write('</head><body >');
+        // mywindow.document.write(document.getElementById('pdf-preview').innerHTML);
+        // mywindow.document.write('</body></html>');
 
-    render1() {
-        return (
-            <div>
-                <button onClick={this.handleSave}>Click</button>
-                <p>{this.state.data?.[0]?.name}</p>
-            </div>
-        );
+        // mywindow.document.close(); // necessary for IE >= 10
+        // mywindow.focus(); // necessary for IE >= 10*/
+
+        // mywindow.print();
+        // mywindow.close();
+
     }
 
     render() {
+        if (this.state.showPDFPreview) {
+            return (
+            <div className='App'>
+                <div id='pdf-preview' className='letter-container'>
+                    <div className='letter-header'>
+                        <h1><img className='letter-icon' src='icon.png' alt='Abbott logo' />Abbott</h1>
+                        <p>All India Abbott Employees Union</p>
+                    </div>
+                    <div className='letter-body'>
+                        <p><b>Subject: </b>Comred Amit Mehta continue as a President.</p>
+                        <p>
+                            I confirm my approval that Com. Amit Mehta continue as a president
+                            of Abbott all India Employee's union and to give his honorary
+                            service even after his retirement.
+                        </p>
+                    </div>
+                    <div className='letter-stats'>
+                    </div>
+                    <div className='letter-preview'>
+                        <div className='letter-value-container'>
+                            <p className='letter-field'>Name:</p>
+                            <p className='letter-value'>{this.state.data?.['name']}</p>
+                        </div>
+                        <div className='letter-value-container'>
+                            <p className='letter-field'>Email:</p>
+                            <p className='letter-value'>{this.state.data?.['email']}</p>
+                        </div>
+                        <div className='letter-value-container'>
+                            <p className='letter-field'>UPI ID:</p>
+                            <p className='letter-value'>{this.state.data?.['upi']}</p>
+                        </div>
+                        <div className='letter-value-container'>
+                            <p className='letter-field'>Employee ID:</p>
+                            <p className='letter-value'>{this.state.data?.['eid']}</p>
+                        </div>
+                        <div className='letter-value-container'>
+                            <p className='letter-field'>Head Quarter:</p>
+                            <p className='letter-value'>{this.state.data?.['hq']}</p>
+                        </div>
+                        <div className='letter-value-container'>
+                            <p className='letter-field'>Designation:</p>
+                            <p className='letter-value'>{this.state.data?.['designation']}</p>
+                        </div>
+                        <div className='letter-value-container'>
+                            <p className='letter-field'>Mobile Number:</p>
+                            <p className='letter-value'>{this.state.data?.['mobile']}</p>
+                        </div>
+                        <div className='letter-value-container'>
+                            <p className='letter-field'>Signature:</p>
+                            <img className='letter-value' src={this.state.data?.['sign']} alt={this.state.data?.['name'] ?? 'sign'} />
+                        </div>
+                    </div>
+                    {
+                        !this.state.downloadStart ? (
+                            <div className='letter-submit'>
+                                <button className='submit-btn' onClick={this.onSave}>Print</button>
+                            </div>
+                        ) : null
+                    }
+                </div>
+            </div>
+            );
+        }
         return (
             <div className='App'>
                 <div className='letter-container'>

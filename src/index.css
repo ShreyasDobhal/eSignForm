@@ -261,3 +261,31 @@ code {
     background-color: #498cc5;
     box-shadow: #498cc5 0px 0px 15px 0px;
 }
+
+.pdf-preview {
+    text-align: center;
+}
+
+.letter-preview {
+    text-align: left;
+}
+
+.letter-value-container {
+    padding-left: 4%;
+    margin-bottom: 4%;
+}
+
+.letter-field {
+    font-weight: bold;
+    padding-right: 4%;
+    margin-bottom: 1%;
+}
+
+.letter-value {
+    margin-top: 0px;
+}
+
+img.letter-value {
+    max-width: 200px;
+    max-height: 50px;
+}
