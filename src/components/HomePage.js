@@ -6,6 +6,7 @@ import SignatureCanvas from 'react-signature-canvas';
 import CanvasOptions from './CanvasOptions';
 import Input from './Input';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {ToastContainer, toast} from 'react-toastify';
 import _ from 'lodash';
 import $ from 'jquery';
 import jsPDF from 'jspdf';
@@ -122,11 +123,12 @@ class HomePage extends Component {
             this.firebaseRef.doc(id).set(data).then(()=> {
                 this.setState({showPDFPreview: true});
             }).catch((err) => {
+                toast.error('Failed to save your details. Try again');
                 console.log(err);
             });
         } else {
             // Do nothing
-            alert('Fill all details');
+            toast.error('Fill all details');
         }
     }
 
@@ -277,6 +279,15 @@ class HomePage extends Component {
         }
         return (
             <div className='App'>
+                <ToastContainer 
+                    position="top-center"
+                    autoClose={5000}
+                    hideProgressBar={true}
+                    closeOnClick
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
                 <div className='letter-container'>
                     <div className='letter-header'>
                         <h1><img className='letter-icon' src='icon.png' alt='Abbott logo' />Abbott</h1>
