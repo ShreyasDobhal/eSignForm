@@ -8,8 +8,11 @@ import Input from './Input';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {ToastContainer, toast} from 'react-toastify';
 import _ from 'lodash';
-import $ from 'jquery';
-import jsPDF from 'jspdf';
+// import $ from 'jquery';
+// import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
+window.html2canvas = html2canvas
 
 class HomePage extends Component {
     constructor(props) {
@@ -117,9 +120,6 @@ class HomePage extends Component {
 
             this.setState({data});
 
-            toast.info('Your response has been saved !');
-            this.setState({showPDFPreview: true});
-            return;
             // Save data to DB
             this.firebaseRef.doc(id).set(data).then(()=> {
                 toast.info('Your response has been saved !');
@@ -160,55 +160,35 @@ class HomePage extends Component {
             setTimeout(() => {
                 window.print();
                 this.setState({downloadStart: false});
+
+                // const doc = new jsPDF();
+
+                // Works but overflows
+                // doc.fromHTML(document.getElementById('pdf-preview'), 20, 20, {
+                //     elementHandlers: () => {
+                //         return true;
+                //     }
+                // }, () => {
+                //     doc.save('main.pdf');
+                // });
+                
+                // Works but no styling
+                // doc.fromHTML(`<html><head><title>Hey</title></head><body>${document.getElementById('pdf-preview').innerHTML}</body></html>`, 1, 1, {
+                //     elementHandlers: () => {
+                //         return true;
+                //     }
+                // }, () => {
+                //     doc.save('main.pdf');
+                // });
+
+                // Save never loads
+                // doc.addHTML(document.getElementById('pdf-preview'), 20, 20, {}, () => {
+                //     console.log('Saved');
+                //     doc.save('main.pdf');
+                // })
+
             }, 1000);
         });
-        // window.html2canvas = html2canvas;
-        // const doc = document.getElementById('pdf-preview');
-        // const pdf = new jsPDF();;
-        // pdf.fromHTML(doc);
-        // pdf.save();
-
-        // const doc = new jsPDF();
-        
-        // doc.text("Hello World", 10, 10);
-        // doc.save("a4.pdf");
-        
-        // const doc = new jsPDF("p", "mm", "a4");
-        // const doc = new jsPDF();
-        // doc.fromHTML(document.getElementById('pdf-preview').innerHTML, 15, 15, {
-        //     width: 170,
-        //     callback: () => {
-        //         doc.save();
-            
-        // });
-        // doc.output("dataurlnewwindow");
-        // doc.save();
-        // doc.setFontSize(8);
-
-        // doc.addHTML($('#pdf-preview')[0], () => {
-        //     doc.save('test.pdf');
-        // })
-        // doc.html(document.getElementById('pdf-preview').innerHTML, {
-        //     callback: (doc) => {
-        //         doc.save('test.pdf');
-        //     },
-        //     x: 10,
-        //     y: 10
-        // });
-
-        // let mywindow = window.open('', 'PRINT', 'height=650,width=900,top=100,left=150');
-
-        // mywindow.document.write(`<html><head><title>Abbott</title>`);
-        // mywindow.document.write('</head><body >');
-        // mywindow.document.write(document.getElementById('pdf-preview').innerHTML);
-        // mywindow.document.write('</body></html>');
-
-        // mywindow.document.close(); // necessary for IE >= 10
-        // mywindow.focus(); // necessary for IE >= 10*/
-
-        // mywindow.print();
-        // mywindow.close();
-
     }
 
     render() {
