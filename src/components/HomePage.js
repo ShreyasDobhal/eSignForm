@@ -117,10 +117,12 @@ class HomePage extends Component {
 
             this.setState({data});
 
+            toast.info('Your response has been saved !');
             this.setState({showPDFPreview: true});
             return;
             // Save data to DB
             this.firebaseRef.doc(id).set(data).then(()=> {
+                toast.info('Your response has been saved !');
                 this.setState({showPDFPreview: true});
             }).catch((err) => {
                 toast.error('Failed to save your details. Try again');
@@ -213,6 +215,15 @@ class HomePage extends Component {
         if (this.state.showPDFPreview) {
             return (
             <div className='App'>
+                <ToastContainer 
+                    position="top-center"
+                    autoClose={5000}
+                    hideProgressBar={true}
+                    closeOnClick
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
                 <div id='pdf-preview' className='letter-container'>
                     <div className='letter-header'>
                         <h1><img className='letter-icon' src='icon.png' alt='Abbott logo' />Abbott</h1>
