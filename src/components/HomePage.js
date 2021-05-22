@@ -52,6 +52,13 @@ class HomePage extends Component {
         this.setState({signCanvasFocused: false});
     }
 
+    signatureStarted = () => {
+        _.forEach(this.inputRef, (ref) => {
+            ref.current.blur();
+        });
+        this.setState({signCanvasFocused: true});
+    }
+
     validateEnteredData = (data, field) => {
         if (_.isEmpty(data)) {
             return 'This field cannot be empty';
@@ -104,9 +111,13 @@ class HomePage extends Component {
                 return result;
             }, {});
             data['sign'] = sign;
+            const date = new Date();
+            data['date'] = date.toDateString() + ', ' + date.toLocaleTimeString();
 
             this.setState({data});
 
+            this.setState({showPDFPreview: true});
+            return;
             // Save data to DB
             this.firebaseRef.doc(id).set(data).then(()=> {
                 this.setState({showPDFPreview: true});
@@ -245,6 +256,10 @@ class HomePage extends Component {
                             <p className='letter-value'>{this.state.data?.['mobile']}</p>
                         </div>
                         <div className='letter-value-container'>
+                            <p className='letter-field'>Date:</p>
+                            <p className='letter-value'>{this.state.data?.['date']}</p>
+                        </div>
+                        <div className='letter-value-container'>
                             <p className='letter-field'>Signature:</p>
                             <img className='letter-value' src={this.state.data?.['sign']} alt={this.state.data?.['name'] ?? 'sign'} />
                         </div>
@@ -341,7 +356,7 @@ class HomePage extends Component {
                                 className: this.state.signCanvasFocused ? 'signCanvas' : 'signCanvasPlaceholder'
                             }}
                             clearOnResize={false}
-                            onBegin={() => this.setState({signCanvasFocused: true})}
+                            onBegin={this.signatureStarted}
                         />
                     </div>
                     <CanvasOptions onClear={this.handleSignClear} />   
