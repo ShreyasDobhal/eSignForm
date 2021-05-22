@@ -5,6 +5,7 @@ import {v4 as uuidv4} from 'uuid';
 import SignatureCanvas from 'react-signature-canvas';
 import CanvasOptions from './CanvasOptions';
 import Input from './Input';
+import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import _ from 'lodash';
 import $ from 'jquery';
 import jsPDF from 'jspdf';
@@ -26,6 +27,7 @@ class HomePage extends Component {
             },
             signCanvasFocused: false,
             letterStats: null,
+            otherNames: [],
             showPDFPreview: false,
             downloadStart: false,
             data: null,
@@ -131,7 +133,10 @@ class HomePage extends Component {
             } else {
                 message = `${_.sample(names).name} and ${names.length - 1} others have already signed this document`;
             }
-            this.setState({letterStats: message});
+            this.setState({
+                letterStats: message,
+                otherNames: _.map(names, (name) => name.name)
+            });
         });
     }
 
@@ -271,8 +276,21 @@ class HomePage extends Component {
                         </p>
                     </div>
                     <div className='letter-stats'>
-                        <span><i class="fas fa-pencil-alt"></i></span>
-                        <span className='label-small'> {this.state.letterStats}</span>
+                        <span><i className="fas fa-pencil-alt"></i></span>
+                        <OverlayTrigger 
+                            placement='bottom'
+                            overlay={
+                                <Tooltip>
+                                    <div className='tooltip'>
+                                        {_.concat(
+                                            _.slice(_.map(_.uniq(this.state.otherNames), (name, i) => <p key={i}>{name}</p>), 0, 5),
+                                            this.state.otherNames.length > 5 ? [<p key={5}>...</p>] : []
+                                        )}
+                                    </div>
+                                </Tooltip>
+                            }>
+                            <span className='label-small'> {this.state.letterStats}</span>
+                        </OverlayTrigger>
                     </div>
                     <div className='letter-form'>
                         <Input 

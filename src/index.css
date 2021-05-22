@@ -68,6 +68,19 @@ code {
     }
 }
 
+.tooltip {
+    border: 1px solid #0000008f;
+    background-color: #0000008f;
+    border-radius: 5px;
+    text-align: center;
+    width: 250px;
+    color: white;
+}
+
+.tooltip > p {
+    margin: 5px;
+    text-transform: capitalize;
+}
 
 .letter-container {
     border: 1px solid #e9f6ff;
